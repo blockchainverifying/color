@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home Default Page</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif; /* Changed to Inter for consistency */
+            background: #f9f9f9;
+            padding-bottom: 60px; /* Add padding to body to prevent content from being hidden by sticky footer */
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Added subtle shadow */
+        }
+        .logo img {
+            height: 50px;
+            border-radius: 50%; /* Added rounded corners to logo */
+        }
+        .balance-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #e2e8f0; /* Light background for balance */
+            padding: 8px 15px;
+            border-radius: 20px; /* Pill shape */
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .balance-display i {
+            color: #28a745; /* Green for balance icon */
+            font-size: 1.2rem;
+        }
+        .slider {
+            width: 100%;
+            max-width: 800px;
+            height: 250px;
+            margin: 10px auto;
+            overflow: hidden;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .slides {
+            display: flex;
+            width: 200%; /* Adjust based on number of slides */
+            height: 100%;
+            transition: transform 1s ease-in-out;
+        }
+        .slides img {
+            width: 100%; /* Make image fill its container */
+            height: 250px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .announcement {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 10px 15px;
+            background-color: #fff4e5;
+            border-left: 5px solid orange;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .announcement i {
+            font-size: 24px;
+            color: #ef4444; /* Red color */
+            flex-shrink: 0;
+        }
+        .announcement-text-wrapper {
+            position: relative;
+            overflow: hidden;
+            flex-grow: 1;
+        }
+        .announcement-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll-left 10s linear infinite;
+        }
+        .announcement .details-btn {
+            background-color: #ef4444; /* Red color */
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            flex-shrink: 0;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .announcement .details-btn:hover {
+            background-color: #dc2626;
+        }
+        @keyframes scroll-left {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .categories {
+            max-width: 800px;
+            margin: 30px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .category {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80px;
+            text-decoration: none; /* Remove underline from links */
+            color: inherit; /* Inherit color */
+        }
+        .category img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease; /* Add hover effect */
+        }
+        .category img:hover {
+            transform: scale(1.05);
+        }
+        .category span {
+            margin-top: 8px;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 600;
+            color: #333;
+        }
+        /* Winning info container below PVC */
+        .winning-info-pvc {
+            max-width: 800px;
+            margin: 20px auto 40px;
+            background: linear-gradient(135deg, #fefefe, #f0f2f5); /* Subtle gradient */
+            padding: 20px 25px; /* Increased padding */
+            border-radius: 12px; /* More rounded corners */
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15); /* Stronger shadow */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            border: 1px solid #e0e0e0; /* Light border */
+        }
+        .winning-info-pvc h4 {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* More space */
+            margin: 0 0 18px; /* More bottom margin */
+            font-weight: 800; /* Bolder */
+            color: #2c3e50; /* Darker text */
+            font-size: 1.6rem; /* Larger title */
+            border-bottom: 2px solid #ef4444; /* Red underline */
+            padding-bottom: 10px;
+        }
+        .winning-info-pvc h4 img {
+            height: 38px; /* Larger icon */
+            width: 38px; /* Larger icon */
+            object-fit: contain;
+        }
+        .winner-list {
+            display: flex;
+            flex-direction: column; /* Changed to column for vertical rows */
+            gap: 12px; /* Spacing between winner rows */
+            padding: 5px 0;
+        }
+        .winner {
+            display: flex;
+            flex-direction: column; /* Changed to column for more info */
+            background: linear-gradient(45deg, #ffffff, #f9f9f9); /* Subtle gradient for each winner */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Improved shadow */
+            padding: 15px 20px; /* Adjusted padding */
+            color: #333;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+            border: 1px solid #f0f0f0;
+        }
+        .winner:hover {
+            transform: translateY(-3px); /* Lift effect on hover */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Stronger shadow on hover */
+        }
+        .winner-main-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 8px; /* Space between main info and details */
+        }
+        .winner-username, .winner-amount {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .winner-username {
+            font-size: 1.1rem; /* Larger font */
+            font-weight: 700; /* Bolder */
+            color: #1a202c; /* Darker text */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-grow: 1;
+        }
+        .winner-username i {
+            color: #3f51b5; /* Blue icon for user */
+        }
+        .winner-amount {
+            color: #28a745; /* Green for amount */
+            font-weight: 800; /* Extra bold */
+            font-size: 1.2rem; /* Larger amount */
+            flex-shrink: 0;
+        }
+        .winner-amount i {
+            color: #28a745; /* Green icon for amount */
+        }
+        .winner-details {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 500;
+        }
+        .winner-details span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .winner-details i {
+            color: #999;
+        }
+
+
+        /* Basic Tools Section Styling */
+        .basic-tools {
+            max-width: 800px;
+            margin: 40px auto; /* Increased margin for separation */
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        .basic-tools h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Responsive grid */
+            gap: 20px;
+            justify-items: center; /* Center items in grid cells */
+        }
+        .tool-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 10px;
+            background-color: #f0f8ff; /* Light blue background */
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            width: 100%; /* Ensure it fills grid cell */
+            max-width: 150px; /* Max width for consistency */
+            box-sizing: border-box; /* Include padding in width */
+        }
+        .tool-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .tool-item i {
+            font-size: 36px; /* Larger icon size */
+            color: #007bff; /* Blue color for icons */
+            margin-bottom: 10px;
+        }
+        .tool-item span {
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            color: #333;
+        }
+
+        /* Game Display Area Styling */
+        .game-display-area {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            display: none; /* Hidden by default */
+            opacity: 0; /* Start hidden for fade-in */
+            transform: translateY(20px); /* Start slightly below for slide-up */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Smooth transition */
+        }
+        .game-display-area.visible {
+            display: block; /* Shown when active */
+            opacity: 1; /* Fade in */
+            transform: translateY(0); /* Slide up to position */
+        }
+        .game-display-area h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 28px; /* Larger title */
+            color: #1a202c; /* Darker color */
+            font-weight: 800; /* Bolder */
+            border-bottom: 3px solid #ef4444; /* Emphasized border */
+            padding-bottom: 15px;
+            margin-top: 0;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05); /* Subtle text shadow */
+        }
+        .game-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Max 6 columns, responsive */
+            gap: 15px;
+            margin-bottom: 15px; /* Space between rows */
+            justify-items: center;
+        }
+        .game-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            background-color: #ffffff; /* White background */
+            border: 1px solid #e2e8f0; /* Light border */
+            border-radius: 12px; /* More rounded corners */
+            padding: 12px; /* Increased padding */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Stronger shadow */
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            width: 100%; /* Ensure it takes full grid cell width */
+            box-sizing: border-box;
+        }
+        .game-item:hover {
+            transform: translateY(-5px); /* More pronounced lift */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2); /* Even stronger shadow on hover */
+            background-color: #f0f8ff; /* Light blue on hover */
+        }
+        .game-item img {
+            width: 70px; /* Slightly larger image */
+            height: 70px; /* Slightly larger image */
+            object-fit: cover;
+            border-radius: 10px; /* Rounded image corners */
+            margin-bottom: 10px; /* More space below image */
+            border: 2px solid #ef4444; /* Red border on image */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .game-item span {
+            font-size: 0.9rem; /* Slightly larger font */
+            font-weight: 600; /* Bolder text */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            color: #2d3748; /* Darker text color */
+        }
+
+
+        /* Sticky Bottom Navigation */
+        .bottom-nav {
+            position: fixed; /* Changed to fixed for true stickiness */
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 0;
+            box-sizing: border-box;
+            z-index: 999; /* Ensure it stays on top */
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #6b7280; /* Gray color for inactive items */
+            font-size: 0.75rem; /* Smaller font size */
+            font-weight: 500;
+            transition: color 0.3s ease;
+            flex: 1; /* Distribute space evenly */
+            padding: 5px 0;
+        }
+        .nav-item i {
+            font-size: 1.5rem; /* Icon size */
+            margin-bottom: 4px;
+        }
+        .nav-item:hover {
+            color: #ef4444; /* Red on hover */
+        }
+        .nav-item.active { /* Optional: for active state */
+            color: #ef4444;
+        }
+
+        /* Message Box Styling */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ef4444; /* Red background */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .message-box.visible {
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+            }
+            .logo img {
+                height: 40px;
+            }
+            .balance-display {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            .balance-display i {
+                font-size: 1rem;
+            }
+            .slider {
+                height: 180px; /* Smaller height on mobile */
+            }
+            .slides img {
+                height: 180px;
+            }
+            .announcement {
+                margin: 15px auto;
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+            .announcement i {
+                font-size: 20px;
+            }
+            .announcement .details-btn {
+                padding: 5px 10px;
+                font-size: 13px;
+            }
+            .categories, .winning-info-pvc, .basic-tools, .game-display-area {
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+            .category {
+                width: 70px;
+            }
+            .category img {
+                width: 60px;
+                height: 60px;
+            }
+            .category span {
+                font-size: 13px;
+            }
+            .tool-grid, .game-row {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 15px;
+            }
+            .tool-item i {
+                font-size: 30px;
+            }
+            .tool-item span {
+                font-size: 14px;
+            }
+            .nav-item {
+                font-size: 0.7rem;
+            }
+            .nav-item i {
+                font-size: 1.3rem;
+            }
+            .game-item img {
+                width: 60px; /* Adjust for smaller screens */
+                height: 60px;
+            }
+            .game-item span {
+                font-size: 0.8rem; /* Adjust for smaller screens */
+            }
+            .winning-info-pvc h4 {
+                font-size: 1.3rem;
+            }
+            .winner-username {
+                font-size: 1rem;
+            }
+            .winner-amount {
+                font-size: 1.1rem;
+            }
+            .winner-details {
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slider {
+                height: 150px;
+            }
+            .slides img {
+                height: 150px;
+            }
+            .tool-grid, .game-row {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on very small screens */
+            }
+            .message-box {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0);
+            }
+        }
+    </style>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/other/h5setting_20250304095910se35.png"
+                alt="Logo"
+            />
+        </div>
+        <div class="balance-display">
+            <i class="fas fa-wallet"></i>
+            <span>₹1,234.56</span>
+        </div>
+    </header>
+
+    <div class="slider">
+        <div class="slides" id="slides">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/banner/Banner_20250308175927pqo4.jpg"
+                alt="Slide 1"
+            />
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/banner/Banner_20250308175942jw59.jpg"
+                alt="Slide 2"
+            />
+        </div>
+    </div>
+
+    <div class="announcement">
+        <i class="fas fa-bullhorn"></i>
+        <div class="announcement-text-wrapper">
+            <div class="announcement-text">
+                Welcome to TeerWin! Big updates coming soon. Stay tuned for more
+                details and special events!
+            </div>
+        </div>
+        <button class="details-btn" data-redirect="auth.html">Details</button>
+    </div>
+
+    <div class="categories">
+        <a href="#" class="category" data-category="lottery" data-redirect="auth.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095732ps6x.png"
+                alt="Lottery"
+            />
+            <span>Lottery</span>
+        </a>
+        <a href="#" class="category" data-category="original" data-redirect="auth.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095754f4cq.png"
+                alt="Original"
+            />
+            <span>Original</span>
+        </a>
+        <a href="#" class="category" data-category="slots" data-redirect="auth.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_202503040958093kdc.png"
+                alt="Slots"
+            />
+            <span>Slots</span>
+        </a>
+        <a href="#" class="category" data-category="fishing" data-redirect="auth.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095553c3ew.png"
+                alt="Fishing"
+            />
+            <span>Fishing</span>
+        </a>
+        <a href="#" class="category" data-category="sports" data-redirect="auth.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095820oku8.png"
+                alt="Sports"
+            />
+            <span>Sports</span>
+        </a>
+        <a href="#" class="category" data-category="casino" data-redirect="auth.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095535gf4h.png"
+                alt="Casino"
+            />
+            <span>Casino</span>
+        </a>
+        <a href="#" class="category" data-category="pvc" data-redirect="auth.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095719ero7.png"
+                alt="PVC"
+            />
+            <span>PVC</span>
+        </a>
+    </div>
+
+    <div class="game-display-area" id="gameDisplayArea">
+        </div>
+
+    <div class="winning-info-pvc">
+        <h4>
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/vendorlogo/vendorlogo_20250302165659ac5p.png"
+                alt="Winning Info Logo"
+            />
+            Winning Info
+        </h4>
+        <div class="winner-list" id="winner-list"></div>
+    </div>
+
+    <div class="basic-tools">
+        <h2>Basic Tools</h2>
+        <div class="tool-grid">
+            <a href="#" class="tool-item" data-redirect="auth.html">
+                <i class="fas fa-language"></i>
+                <span>Language</span>
+            </a>
+            <a href="#" class="tool-item" data-redirect="auth.html">
+                <i class="fas fa-bullhorn"></i>
+                <span>Announcement</span>
+            </a>
+            <a href="#" class="tool-item" data-redirect="auth.html">
+                <i class="fas fa-headset"></i>
+                <span>24/7 Support</span>
+            </a>
+            <a href="#" class="tool-item" data-redirect="auth.html">
+                <i class="fas fa-book-open"></i>
+                <span>Beginner Guide</span>
+            </a>
+            <a href="#" class="tool-item" data-redirect="auth.html">
+                <i class="fas fa-info-circle"></i>
+                <span>About Us</span>
+            </a>
+        </div>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <footer class="bottom-nav">
+        <a href="#" class="nav-item active" data-redirect="promotion.html">
+            <i class="fas fa-gift"></i>
+            <span>Promotion</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="auth.html">
+            <i class="fas fa-trophy"></i>
+            <span>Activity</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="main.html">
+            <i class="fas fa-gamepad"></i>
+            <span>Game</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="wallet.html">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="Account.html">
+            <i class="fas fa-user-circle"></i>
+            <span>Account</span>
+        </a>
+    </footer>
+
+    <script>
+        // IMPORTANT: The game data is now loaded from localStorage, which is managed by the admin panel.
+        // The LOCAL_STORAGE_KEY must match the one used in the admin_page.
+        const LOCAL_STORAGE_KEY = 'adminGamesData';
+        let loadedGames = {}; // This will store games categorized by their category ID
+
+        // Function to load games from local storage
+        function loadGamesFromLocalStorage() {
+            const storedGames = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (storedGames) {
+                try {
+                    const parsedGames = JSON.parse(storedGames);
+                    // Organize games by category for easy lookup
+                    loadedGames = {};
+                    parsedGames.forEach(game => {
+                        if (!loadedGames[game.category]) {
+                            loadedGames[game.category] = [];
+                        }
+                        loadedGames[game.category].push(game);
+                    });
+                } catch (e) {
+                    console.error("Error parsing stored games from localStorage:", e);
+                    loadedGames = {};
+                }
+            }
+        }
+
+        // Slider logic
+        let index = 0;
+        const slides = document.getElementById("slides");
+        const totalSlides = slides.children.length;
+        // Adjust width calculation for responsive slider
+        const updateSliderPosition = () => {
+            const slideWidth = slides.parentElement.offsetWidth;
+            slides.style.transform = `translateX(-${index * slideWidth}px)`;
+            // Update individual image widths if necessary (though CSS should handle it)
+            Array.from(slides.children).forEach(img => img.style.width = `${slideWidth}px`);
+        };
+
+        // Initial update and on resize
+        window.addEventListener('resize', updateSliderPosition);
+        updateSliderPosition(); // Call once on load
+
+        setInterval(() => {
+            index = (index + 1) % totalSlides;
+            updateSliderPosition();
+        }, 3000);
+
+        // Generate random usernames and amounts for winners
+        function randomUsername() {
+            const adjectives = [
+                "Fast", "Crazy", "Lucky", "Silent", "Brave", "Smart", "Bold", "Cool", "Wild", "Swift",
+            ];
+            const nouns = [
+                "Tiger", "Eagle", "Lion", "Wolf", "Shark", "Dragon", "Falcon", "Panther", "Hawk", "Fox",
+            ];
+            return (
+                adjectives[Math.floor(Math.random() * adjectives.length)] +
+                nouns[Math.floor(Math.random() * nouns.length)] +
+                Math.floor(Math.random() * 1000)
+            );
+        }
+
+        // Mock game names for winning info
+        const mockGameNames = [
+            "Fast Lottery", "Keno", "Fruit Frenzy", "Deep Sea Hunter", "Football Betting", "Roulette", "Diamond Rush", "Lucky 5"
+        ];
+
+        function randomAmount() {
+            return (Math.floor(Math.random() * 9991) + 10).toLocaleString();
+        }
+
+        function randomGamePlayed() {
+            return mockGameNames[Math.floor(Math.random() * mockGameNames.length)];
+        }
+
+        // Updated randomTimeAgo to be more recent
+        function randomTimeAgo() {
+            const unit = Math.random() < 0.7 ? 'seconds' : 'minutes'; // 70% chance of seconds, 30% minutes
+            if (unit === 'seconds') {
+                const seconds = Math.floor(Math.random() * 59) + 1; // 1 to 59 seconds
+                return `${seconds} secs ago`;
+            } else {
+                const minutes = Math.floor(Math.random() * 59) + 1; // 1 to 59 minutes
+                return `${minutes} mins ago`;
+            }
+        }
+
+        let winners = [];
+
+        function generateWinner() {
+            const user = randomUsername();
+            const amount = randomAmount();
+            const game = randomGamePlayed();
+            const time = randomTimeAgo();
+            winners.unshift({ user, amount, game, time }); // add new winner front
+            if (winners.length > 5) winners.pop(); // keep only last 5
+            renderWinners();
+        }
+
+        function renderWinners() {
+            const list = document.getElementById("winner-list");
+            list.innerHTML = "";
+            winners.forEach(({ user, amount, game, time }) => {
+                const div = document.createElement("div");
+                div.className = "winner";
+                div.innerHTML = `
+                    <div class="winner-main-info">
+                        <div class="winner-username"><i class="fas fa-user-circle"></i>${user}</div>
+                        <div class="winner-amount"><i class="fas fa-rupee-sign"></i>${amount}</div>
+                    </div>
+                    <div class="winner-details">
+                        <span><i class="fas fa-gamepad"></i>${game}</span>
+                        <span><i class="fas fa-clock"></i>${time}</span>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Initial fill so it’s never empty
+        for (let i = 0; i < 5; i++) {
+            generateWinner();
+        }
+
+        // Update every 10 seconds
+        setInterval(generateWinner, 10 * 1000);
+
+        // Game Display Logic
+        const gameDisplayArea = document.getElementById('gameDisplayArea');
+        let currentOpenCategory = null; // To keep track of which category's games are open
+
+        function renderGames(categoryName) {
+            gameDisplayArea.innerHTML = ''; // Clear previous games
+            gameDisplayArea.classList.add('visible'); // Make the container visible
+
+            const gamesToDisplay = loadedGames[categoryName]; // Use loadedGames
+            if (!gamesToDisplay || gamesToDisplay.length === 0) {
+                gameDisplayArea.innerHTML = `<p class="text-center text-gray-600">No games found for ${categoryName.charAt(0).toUpperCase() + categoryName.slice(1)}.</p>`;
+                return;
+            }
+
+            // Add a title for the section
+            const title = document.createElement('h2');
+            title.textContent = `${categoryName.charAt(0).toUpperCase() + categoryName.slice(1)} Games`;
+            gameDisplayArea.appendChild(title);
+
+            let currentRow = null;
+            gamesToDisplay.forEach((game, index) => {
+                // Create a new row every 6 games or if it's the first game
+                if (index % 6 === 0) {
+                    currentRow = document.createElement('div');
+                    currentRow.className = 'game-row';
+                    gameDisplayArea.appendChild(currentRow);
+                }
+
+                const gameItem = document.createElement('a');
+                gameItem.href = game.gameUrl; // Use the actual game URL from admin panel
+                gameItem.className = 'game-item';
+                gameItem.setAttribute('data-redirect', 'auth.html'); // Redirect to login on click
+                gameItem.innerHTML = `
+                    <img src="${game.logoUrl}" alt="${game.name}" onerror="this.onerror=null; this.src='https://placehold.co/60x60/cccccc/000000?text=No+Image';">
+                    <span>${game.name}</span>
+                `;
+                currentRow.appendChild(gameItem);
+            });
+
+            // Re-attach the "Please login first" click handler to newly rendered game items
+            gameDisplayArea.querySelectorAll('.game-item').forEach(item => {
+                item.addEventListener('click', handleRedirectClick);
+            });
+        }
+
+        function hideGames() {
+            gameDisplayArea.innerHTML = '';
+            gameDisplayArea.classList.remove('visible');
+            currentOpenCategory = null;
+        }
+
+        // Unified click handler for "Please login first" and redirect
+        function handleRedirectClick(event) {
+            event.preventDefault(); // Prevent default link/button behavior
+
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = "Please login first";
+            messageBox.classList.add('visible');
+
+            const redirectUrl = this.getAttribute('data-redirect') || 'auth.html';
+            
+            setTimeout(() => {
+                messageBox.classList.remove('visible'); // Hide message
+                window.location.href = redirectUrl; // Redirect to the specified page
+            }, 1500); // Message visible for 1.5 seconds before redirect
+        }
+
+        // Attach click listeners to category items
+        const categoryItems = document.querySelectorAll('.category');
+        categoryItems.forEach(item => {
+            item.addEventListener('click', function(event) {
+                event.preventDefault();
+                const category = this.getAttribute('data-category');
+
+                if (currentOpenCategory === category) {
+                    // If the same category is clicked again, hide the games
+                    hideGames();
+                } else {
+                    // Otherwise, render games for the new category
+                    renderGames(category);
+                    currentOpenCategory = category;
+                }
+            });
+        });
+
+        // Attach click listeners to other redirecting elements
+        const elementsToRedirect = document.querySelectorAll(
+            '.tool-item, .details-btn, .nav-item'
+        );
+        elementsToRedirect.forEach(item => {
+            item.addEventListener('click', handleRedirectClick);
+        });
+
+        // Load games from local storage when the page loads
+        document.addEventListener('DOMContentLoaded', loadGamesFromLocalStorage);
+    </script>
+</body>
+</html>

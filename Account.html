@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Account Page</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #f9f9f9;
+            padding-bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .logo img {
+            height: 50px;
+            border-radius: 50%;
+        }
+        .balance-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #e2e8f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .balance-display i {
+            color: #28a745;
+            font-size: 1.2rem;
+        }
+
+        /* Account Page Specific Styles */
+        .account-container {
+            width: calc(100% - 40px); /* Full width with 20px margin on each side */
+            margin: 30px auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 50px; /* Cylindrical/pill shape */
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            flex-grow: 1; /* Allow container to grow and push footer down */
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+        .account-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            color: #1a202c;
+            font-weight: 800;
+            border-bottom: 3px solid #ef4444;
+            padding-bottom: 15px;
+            margin-top: 0;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .profile-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ef4444;
+            box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.2);
+            flex-shrink: 0;
+        }
+        .profile-info {
+            flex-grow: 1;
+        }
+        .profile-info p {
+            margin: 5px 0;
+            font-size: 1.1rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-info p strong {
+            color: #1a202c;
+            font-weight: 700;
+        }
+        .profile-info p i {
+            color: #4a5568;
+            font-size: 1.2rem;
+        }
+        .profile-info .member-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ef4444;
+            margin-bottom: 10px;
+        }
+        .profile-info .uid-text, .profile-info .last-login-text {
+            font-size: 0.95rem;
+            color: #666;
+        }
+        .profile-info .uid-text i, .profile-info .last-login-text i {
+            color: #999;
+        }
+
+        /* Quick Actions Section */
+        .quick-actions {
+            margin-bottom: 30px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        .quick-actions h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        /* History Section */
+        .history-actions {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        .history-actions h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        /* Account Actions Section (updated content) */
+        .account-actions {
+            margin-top: 30px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        .account-actions h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            justify-items: center;
+        }
+        .tool-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 10px;
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            width: 100%;
+            max-width: 150px;
+            box-sizing: border-box;
+        }
+        .tool-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background-color: #ffe6e6; /* Light red on hover */
+        }
+        .tool-item i {
+            font-size: 36px;
+            color: #ef4444; /* Changed to red */
+            margin-bottom: 10px;
+        }
+        .tool-item span {
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            color: #333;
+        }
+
+        /* Sticky Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 0;
+            box-sizing: border-box;
+            z-index: 999;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            flex: 1;
+            padding: 5px 0;
+        }
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+        .nav-item:hover {
+            color: #ef4444;
+        }
+        .nav-item.active {
+            color: #ef4444;
+        }
+
+        /* Message Box Styling */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ef4444;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .message-box.visible {
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+            }
+            .logo img {
+                height: 40px;
+            }
+            .balance-display {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            .balance-display i {
+                font-size: 1rem;
+            }
+            .account-container {
+                width: calc(100% - 30px); /* Adjust width for smaller screens */
+                margin: 20px 15px;
+                padding: 20px;
+                border-radius: 30px; /* Smaller radius for smaller screens */
+            }
+            .account-container h2 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            .profile-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 15px;
+            }
+            .profile-photo {
+                width: 80px;
+                height: 80px;
+            }
+            .profile-info p {
+                font-size: 1rem;
+            }
+            .profile-info .member-name {
+                font-size: 1.3rem;
+            }
+            .profile-info .uid-text, .profile-info .last-login-text {
+                font-size: 0.85rem;
+            }
+            .tool-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 15px;
+            }
+            .tool-item i {
+                font-size: 30px;
+            }
+            .tool-item span {
+                font-size: 14px;
+            }
+            .nav-item {
+                font-size: 0.7rem;
+            }
+            .nav-item i {
+                font-size: 1.3rem;
+            }
+            .message-box {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tool-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .account-container {
+                border-radius: 20px; /* Even smaller radius for very small screens */
+            }
+        }
+    </style>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/other/h5setting_20250304095910se35.png"
+                alt="Logo"
+            />
+        </div>
+        <div class="balance-display">
+            <i class="fas fa-wallet"></i>
+            <span>₹1,234.56</span>
+        </div>
+    </header>
+
+    <main class="account-container">
+        <h2>My Account</h2>
+        <div class="profile-section">
+            <img
+                src="https://teerwin09.com/assets/png/1-a6662edb.png"
+                alt="Profile Photo"
+                class="profile-photo"
+            />
+            <div class="profile-info">
+                <p class="member-name">John Doe</p>
+                <p class="uid-text"><i class="fas fa-id-badge"></i> UID: <strong>USER123456789</strong></p>
+                <p class="last-login-text"><i class="fas fa-clock"></i> Last Login: <strong>2025-05-22 10:30 AM</strong></p>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h2>Quick Actions</h2>
+            <div class="tool-grid">
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-money-bill-transfer"></i>
+                    <span>Deposit</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-money-check-dollar"></i>
+                    <span>Withdraw</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-wallet"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-star"></i>
+                    <span>VIP</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="history-actions">
+            <h2>My History</h2>
+            <div class="tool-grid">
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-gamepad"></i>
+                    <span>My Game History</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-receipt"></i>
+                    <span>My Transaction History</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>My Deposit History</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>My Withdraw History</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="account-actions">
+            <h2>Settings & Support</h2>
+            <div class="tool-grid">
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Setting</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>Feedback</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcement</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-headset"></i>
+                    <span>Customer Support</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-book-open"></i>
+                    <span>Beginner Guide</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About Us</span>
+                </a>
+                <a href="#" class="tool-item" data-redirect="auth.html">
+                    <i class="fas fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <footer c<footer class="bottom-nav">
+        <a href="#" class="nav-item active" data-redirect="promotion.html">
+            <i class="fas fa-gift"></i>
+            <span>Promotion</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="auth.html">
+            <i class="fas fa-trophy"></i>
+            <span>Activity</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="main.html">
+            <i class="fas fa-gamepad"></i>
+            <span>Game</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="wallet.html">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="Account.html">
+            <i class="fas fa-user-circle"></i>
+            <span>Account</span>
+        </a>
+    </footer>
+
+    <script>
+        // Unified click handler for "Please login first" and redirect
+        function handleRedirectClick(event) {
+            event.preventDefault(); // Prevent default link/button behavior
+
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = "Please login first";
+            messageBox.classList.add('visible');
+
+            const redirectUrl = this.getAttribute('data-redirect') || 'auth.html';
+            
+            setTimeout(() => {
+                messageBox.classList.remove('visible'); // Hide message
+                window.location.href = redirectUrl; // Redirect to the specified page
+            }, 1500); // Message visible for 1.5 seconds before redirect
+        }
+
+        // Attach click listeners to all redirecting elements
+        const elementsToRedirect = document.querySelectorAll(
+            '[data-redirect]'
+        );
+        elementsToRedirect.forEach(item => {
+            item.addEventListener('click', handleRedirectClick);
+        });
+
+        // Set the 'Account' nav item as active
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelectorAll('.bottom-nav .nav-item');
+            navItems.forEach(item => {
+                if (item.querySelector('span').textContent === 'Account') {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

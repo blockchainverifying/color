@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Promotion Page</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #f9f9f9;
+            padding-bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .logo img {
+            height: 50px;
+            border-radius: 50%;
+        }
+        .balance-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #e2e8f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .balance-display i {
+            color: #28a745;
+            font-size: 1.2rem;
+        }
+
+        /* Promotion Page Specific Styles */
+        .promotion-container {
+            width: calc(100% - 40px); /* Full width with 20px margin on each side */
+            margin: 30px auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 50px; /* Cylindrical/pill shape */
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            flex-grow: 1; /* Allow container to grow and push footer down */
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+        .promotion-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            color: #1a202c;
+            font-weight: 800;
+            border-bottom: 3px solid #ef4444;
+            padding-bottom: 15px;
+            margin-top: 0;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .promotion-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        .summary-item .label {
+            font-size: 1.1rem;
+            color: #555;
+            font-weight: 600;
+        }
+        .summary-item .amount {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #28a745; /* Green for commission */
+        }
+
+        .commission-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #fff4e5;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid orange;
+            color: #ef4444;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-align: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .commission-info i {
+            font-size: 1.2rem;
+        }
+
+        /* New Section Styling */
+        .info-section {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .info-section h3 {
+            text-align: center;
+            font-size: 1.6rem;
+            color: #1a202c;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ef4444;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        .detail-item {
+            background-color: #f8f8f8; /* Lighter background for items within sections */
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .detail-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .detail-item .label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .detail-item .value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a202c;
+        }
+
+        .invitation-code-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #e0f2fe; /* Light blue background */
+            border-radius: 8px;
+            border: 1px solid #90caf9;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .invitation-code {
+            flex-grow: 1;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #007bff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .copy-button {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .copy-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Sticky Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 0;
+            box-sizing: border-box;
+            z-index: 999;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            flex: 1;
+            padding: 5px 0;
+        }
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+        .nav-item:hover {
+            color: #ef4444;
+        }
+        .nav-item.active {
+            color: #ef4444;
+        }
+
+        /* Message Box Styling */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ef4444;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .message-box.visible {
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+            }
+            .logo img {
+                height: 40px;
+            }
+            .balance-display {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            .balance-display i {
+                font-size: 1rem;
+            }
+            .promotion-container {
+                width: calc(100% - 30px); /* Adjust width for smaller screens */
+                margin: 20px 15px;
+                padding: 20px;
+                border-radius: 30px; /* Smaller radius for smaller screens */
+            }
+            .promotion-container h2 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            .promotion-summary {
+                padding: 15px;
+            }
+            .summary-item .amount {
+                font-size: 1.5rem;
+            }
+            .summary-item .label {
+                font-size: 1rem;
+            }
+            .commission-info {
+                font-size: 0.85rem;
+            }
+            .info-section h3 {
+                font-size: 1.4rem;
+            }
+            .info-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 10px;
+            }
+            .detail-item {
+                padding: 12px;
+            }
+            .detail-item .value {
+                font-size: 1.3rem;
+            }
+            .nav-item {
+                font-size: 0.7rem;
+            }
+            .nav-item i {
+                font-size: 1.3rem;
+            }
+            .message-box {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .promotion-container {
+                border-radius: 20px; /* Even smaller radius for very small screens */
+            }
+        }
+    </style>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/other/h5setting_20250304095910se35.png"
+                alt="Logo"
+            />
+        </div>
+        <div class="balance-display">
+            <i class="fas fa-wallet"></i>
+            <span>₹1,234.56</span>
+        </div>
+    </header>
+
+    <main class="promotion-container">
+        <h2>My Promotion</h2>
+
+        <div class="promotion-summary">
+            <div class="summary-item">
+                <div class="label">Total Yesterday Commission</div>
+                <div class="amount">₹0.00</div>
+            </div>
+            <div class="commission-info">
+                <i class="fas fa-arrow-up"></i>
+                <span>Upgrade the level to increase the commission income</span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Partner Reward</h3>
+            <div class="info-grid">
+                <div class="detail-item">
+                    <div class="label">Total Rewards Earned</div>
+                    <div class="value">₹0.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Pending Rewards</div>
+                    <div class="value">₹0.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Referral Bonus</div>
+                    <div class="value">₹0.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Activity Bonus</div>
+                    <div class="value">₹0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Invitation Code</h3>
+            <div class="invitation-code-wrapper">
+                <span class="invitation-code" id="invitationCode">TEERWIN12345</span>
+                <button class="copy-button" onclick="copyInvitationCode()">Copy</button>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Direct Subordinate Data</h3>
+            <div class="info-grid">
+                <div class="detail-item">
+                    <div class="label">Total Subordinates</div>
+                    <div class="value">0</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Number of Register Deposit</div>
+                    <div class="value">0</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Deposit Amount</div>
+                    <div class="value">₹0.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Number of people making first deposit</div>
+                    <div class="value">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Team Subordinate Data</h3>
+            <div class="info-grid">
+                <div class="detail-item">
+                    <div class="label">Total Subordinates</div>
+                    <div class="value">0</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Number of Register Deposit</div>
+                    <div class="value">0</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Deposit Amount</div>
+                    <div class="value">₹0.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Number of people making first deposit</div>
+                    <div class="value">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Commission Details</h3>
+            <div class="info-grid">
+                <div class="detail-item">
+                    <div class="label">This Week Total Commission</div>
+                    <div class="value">₹0.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Total Commission Earned</div>
+                    <div class="value">₹0.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Commission Withdrawn</div>
+                    <div class="value">₹0.00</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Pending Commission</div>
+                    <div class="value">₹0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Promotion Data</h3>
+            <div class="info-grid">
+                <div class="detail-item">
+                    <div class="label">Direct Subordinate (Total)</div>
+                    <div class="value">0</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Total Subordinates in Team</div>
+                    <div class="value">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Invitation Rules</h3>
+            <div style="font-size: 0.95rem; color: #555; line-height: 1.5;">
+                <p>1. Invite new users to register and deposit to earn commission.</p>
+                <p>2. Commission rates vary based on your VIP level and the activity of your subordinates.</p>
+                <p>3. Ensure your invited users use your unique invitation code.</p>
+                <p>4. Rewards are settled daily and can be withdrawn to your wallet.</p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Agent Line</h3>
+            <div style="font-size: 0.95rem; color: #555; line-height: 1.5;">
+                <p>View your direct and indirect subordinate tree here.</p>
+                <p>Expand your network to increase your earning potential.</p>
+                <p>For detailed agent line management, please contact customer support.</p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Customer Support</h3>
+            <div style="font-size: 0.95rem; color: #555; line-height: 1.5;">
+                <p>Need assistance? Our support team is available 24/7.</p>
+                <p>Email: <a href="mailto:support@teerwin.com" style="color: #007bff; text-decoration: none;">support@teerwin.com</a></p>
+                <p>Live Chat: <a href="#" data-redirect="auth.html" style="color: #007bff; text-decoration: none;">Click here to chat</a></p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Rebate Ratio</h3>
+            <div style="font-size: 0.95rem; color: #555; line-height: 1.5;">
+                <p>Your current rebate ratio is <strong>X%</strong>.</p>
+                <p>This ratio determines the percentage of commission you receive from your subordinates' activities.</p>
+                <p>Increase your VIP level to unlock higher rebate ratios.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <footer class="bottom-nav">
+        <a href="#" class="nav-item active" data-redirect="promotion.html">
+            <i class="fas fa-gift"></i>
+            <span>Promotion</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="auth.html">
+            <i class="fas fa-trophy"></i>
+            <span>Activity</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="main.html">
+            <i class="fas fa-gamepad"></i>
+            <span>Game</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="wallet.html">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+        </a>
+        <a href="#" class="nav-item" data-redirect="Account.html">
+            <i class="fas fa-user-circle"></i>
+            <span>Account</span>
+        </a>
+    </footer>
+
+    <script>
+        // Function to copy invitation code to clipboard
+        function copyInvitationCode() {
+            const invitationCodeElement = document.getElementById('invitationCode');
+            const textToCopy = invitationCodeElement.textContent;
+
+            // Use the older document.execCommand for broader compatibility in iframes
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showMessage('Invitation code copied!');
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                showMessage('Failed to copy code. Please copy manually.');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // Function to display messages
+        function showMessage(message) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.classList.add('visible');
+            setTimeout(() => {
+                messageBox.classList.remove('visible');
+            }, 2000); // Hide after 2 seconds
+        }
+
+        // Unified click handler for "Please login first" and redirect
+        function handleRedirectClick(event) {
+            event.preventDefault(); // Prevent default link/button behavior
+
+            showMessage("Please login first");
+
+            const redirectUrl = this.getAttribute('data-redirect') || 'auth.html';
+            
+            setTimeout(() => {
+                window.location.href = redirectUrl; // Redirect to the specified page
+            }, 1500); // Message visible for 1.5 seconds before redirect
+        }
+
+        // Attach click listeners to all redirecting elements
+        const elementsToRedirect = document.querySelectorAll(
+            '[data-redirect]'
+        );
+        elementsToRedirect.forEach(item => {
+            item.addEventListener('click', handleRedirectClick);
+        });
+
+        // Set the 'Promotion' nav item as active
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelectorAll('.bottom-nav .nav-item');
+            navItems.forEach(item => {
+                if (item.querySelector('span').textContent === 'Promotion') {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

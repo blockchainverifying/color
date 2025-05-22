@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home Default Page</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif; /* Changed to Inter for consistency */
+            background: #f9f9f9;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Added subtle shadow */
+        }
+        .logo img {
+            height: 50px;
+            border-radius: 50%; /* Added rounded corners to logo */
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .login-btn {
+            background-color: #ef4444; /* Red color */
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px; /* More rounded corners */
+            font-weight: bold;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+        .login-btn:hover {
+            background-color: #dc2626; /* Darker red on hover */
+        }
+        .register-btn {
+            background: none;
+            border: 2px solid #ef4444; /* Red border */
+            color: #ef4444;
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 8px; /* More rounded corners */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+        }
+        .register-btn:hover {
+            background-color: #ef4444;
+            color: white;
+        }
+        .slider {
+            width: 100%;
+            max-width: 800px;
+            height: 250px;
+            margin: 10px auto;
+            overflow: hidden;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .slides {
+            display: flex;
+            width: 200%; /* Adjust based on number of slides */
+            height: 100%;
+            transition: transform 1s ease-in-out;
+        }
+        .slides img {
+            width: 100%; /* Make image fill its container */
+            height: 250px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .announcement {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 10px 15px;
+            background-color: #fff4e5;
+            border-left: 5px solid orange;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .announcement i {
+            font-size: 24px;
+            color: #ef4444; /* Red color */
+            flex-shrink: 0;
+        }
+        .announcement-text-wrapper {
+            position: relative;
+            overflow: hidden;
+            flex-grow: 1;
+        }
+        .announcement-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll-left 10s linear infinite;
+        }
+        .announcement .details-btn {
+            background-color: #ef4444; /* Red color */
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            flex-shrink: 0;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .announcement .details-btn:hover {
+            background-color: #dc2626;
+        }
+        @keyframes scroll-left {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .categories {
+            max-width: 800px;
+            margin: 30px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .category {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80px;
+            text-decoration: none; /* Remove underline from links */
+            color: inherit; /* Inherit color */
+        }
+        .category img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease; /* Add hover effect */
+        }
+        .category img:hover {
+            transform: scale(1.05);
+        }
+        .category span {
+            margin-top: 8px;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 600;
+            color: #333;
+        }
+        /* Winning info container below PVC */
+        .winning-info-pvc {
+            max-width: 800px;
+            margin: 20px auto 40px;
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .winning-info-pvc h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 12px;
+            font-weight: 700;
+            color: #222;
+        }
+        .winning-info-pvc h4 img {
+            height: 32px;
+            width: 32px;
+            object-fit: contain;
+        }
+        .winner-list {
+            display: flex;
+            flex-direction: column; /* Changed to column for vertical rows */
+            gap: 10px; /* Spacing between winner rows */
+            padding: 5px 0;
+            /* Removed horizontal scrolling properties */
+        }
+        .winner {
+            display: flex;
+            flex-direction: row; /* Username and amount side-by-side */
+            justify-content: space-between; /* Space out username and amount */
+            align-items: center; /* Vertically align items */
+            width: 100%; /* Take full width of the container */
+            background: #fafafa;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            padding: 12px 15px; /* Adjusted padding */
+            color: #333;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            box-sizing: border-box; /* Added this line to fix overflow */
+        }
+        .winner:hover {
+            background: #ffe6e6;
+        }
+        .winner-username {
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap; /* Keep username on a single line */
+            flex-grow: 1; /* Allow it to take available space */
+            padding-right: 10px; /* Space between username and amount */
+        }
+        .winner-amount {
+            color: green;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0; /* Prevent amount from shrinking */
+        }
+
+        /* Basic Tools Section Styling */
+        .basic-tools {
+            max-width: 800px;
+            margin: 40px auto; /* Increased margin for separation */
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        .basic-tools h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Responsive grid */
+            gap: 20px;
+            justify-items: center; /* Center items in grid cells */
+        }
+        .tool-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 10px;
+            background-color: #f0f8ff; /* Light blue background */
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            width: 100%; /* Ensure it fills grid cell */
+            max-width: 150px; /* Max width for consistency */
+            box-sizing: border-box; /* Include padding in width */
+        }
+        .tool-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .tool-item i {
+            font-size: 36px; /* Larger icon size */
+            color: #007bff; /* Blue color for icons */
+            margin-bottom: 10px;
+        }
+        .tool-item span {
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            color: #333;
+        }
+
+        /* Message Box Styling */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ef4444; /* Red background */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .message-box.visible {
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+            }
+            .logo img {
+                height: 40px;
+            }
+            .login-btn, .register-btn {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+            .slider {
+                height: 180px; /* Smaller height on mobile */
+            }
+            .slides img {
+                height: 180px;
+            }
+            .announcement {
+                margin: 15px auto;
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+            .announcement i {
+                font-size: 20px;
+            }
+            .announcement .details-btn {
+                padding: 5px 10px;
+                font-size: 13px;
+            }
+            .categories, .winning-info-pvc, .basic-tools {
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+            .category {
+                width: 70px;
+            }
+            .category img {
+                width: 60px;
+                height: 60px;
+            }
+            .category span {
+                font-size: 13px;
+            }
+            .tool-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 15px;
+            }
+            .tool-item i {
+                font-size: 30px;
+            }
+            .tool-item span {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slider {
+                height: 150px;
+            }
+            .slides img {
+                height: 150px;
+            }
+            .tool-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on very small screens */
+            }
+            .message-box {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0);
+            }
+        }
+    </style>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/other/h5setting_20250304095910se35.png"
+                alt="Logo"
+            />
+        </div>
+        <div class="buttons">
+            <button class="login-btn" data-redirect="login.html">Login</button>
+            <button class="register-btn" data-redirect="register.html">Register</button>
+        </div>
+    </header>
+
+    <div class="slider">
+        <div class="slides" id="slides">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/banner/Banner_20250308175927pqo4.jpg"
+                alt="Slide 1"
+            />
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/banner/Banner_20250308175942jw59.jpg"
+                alt="Slide 2"
+            />
+        </div>
+    </div>
+
+    <div class="announcement">
+        <i class="fas fa-bullhorn"></i>
+        <div class="announcement-text-wrapper">
+            <div class="announcement-text">
+                Welcome to TeerWin! Big updates coming soon. Stay tuned for more
+                details and special events!
+            </div>
+        </div>
+        <button class="details-btn" data-redirect="login.html">Details</button>
+    </div>
+
+    <div class="categories">
+        <a href="#" class="category" data-redirect="login.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095732ps6x.png"
+                alt="Lottery"
+            />
+            <span>Lottery</span>
+        </a>
+        <a href="#" class="category" data-redirect="login.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095754f4cq.png"
+                alt="Original"
+            />
+            <span>Original</span>
+        </a>
+        <a href="#" class="category" data-redirect="login.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_202503040958093kdc.png"
+                alt="Slots"
+            />
+            <span>Slots</span>
+        </a>
+        <a href="#" class="category" data-redirect="login.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095553c3ew.png"
+                alt="Fishing"
+            />
+            <span>Fishing</span>
+        </a>
+        <a href="#" class="category" data-redirect="login.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095820oku8.png"
+                alt="Sports"
+            />
+            <span>Sports</span>
+        </a>
+        <a href="#" class="category" data-redirect="login.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095535gf4h.png"
+                alt="Casino"
+            />
+            <span>Casino</span>
+        </a>
+        <a href="#" class="category" data-redirect="login.html">
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/gamecategory/gamecategory_20250304095719ero7.png"
+                alt="PVC"
+            />
+            <span>PVC</span>
+        </a>
+    </div>
+
+    <div class="winning-info-pvc">
+        <h4>
+            <img
+                src="https://ossimg.ffewcvx.com/TeerWin/vendorlogo/vendorlogo_20250302165659ac5p.png"
+                alt="Winning Info Logo"
+            />
+            Winning Info
+        </h4>
+        <div class="winner-list" id="winner-list"></div>
+    </div>
+
+    <div class="basic-tools">
+        <h2>Basic Tools</h2>
+        <div class="tool-grid">
+            <a href="#" class="tool-item" data-redirect="login.html">
+                <i class="fas fa-language"></i>
+                <span>Language</span>
+            </a>
+            <a href="#" class="tool-item" data-redirect="login.html">
+                <i class="fas fa-bullhorn"></i>
+                <span>Announcement</span>
+            </a>
+            <a href="#" class="tool-item" data-redirect="login.html">
+                <i class="fas fa-headset"></i>
+                <span>24/7 Support</span>
+            </a>
+            <a href="#" class="tool-item" data-redirect="login.html">
+                <i class="fas fa-book-open"></i>
+                <span>Beginner Guide</span>
+            </a>
+            <a href="#" class="tool-item" data-redirect="login.html">
+                <i class="fas fa-info-circle"></i>
+                <span>About Us</span>
+            </a>
+        </div>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script>
+        // Slider logic
+        let index = 0;
+        const slides = document.getElementById("slides");
+        const totalSlides = slides.children.length;
+        // Adjust width calculation for responsive slider
+        const updateSliderPosition = () => {
+            const slideWidth = slides.parentElement.offsetWidth;
+            slides.style.transform = `translateX(-${index * slideWidth}px)`;
+            // Update individual image widths if necessary (though CSS should handle it)
+            Array.from(slides.children).forEach(img => img.style.width = `${slideWidth}px`);
+        };
+
+        // Initial update and on resize
+        window.addEventListener('resize', updateSliderPosition);
+        updateSliderPosition(); // Call once on load
+
+        setInterval(() => {
+            index = (index + 1) % totalSlides;
+            updateSliderPosition();
+        }, 3000);
+
+        // Generate random usernames and amounts for winners
+        function randomUsername() {
+            const adjectives = [
+                "Fast", "Crazy", "Lucky", "Silent", "Brave", "Smart", "Bold", "Cool", "Wild", "Swift",
+            ];
+            const nouns = [
+                "Tiger", "Eagle", "Lion", "Wolf", "Shark", "Dragon", "Falcon", "Panther", "Hawk", "Fox",
+            ];
+            return (
+                adjectives[Math.floor(Math.random() * adjectives.length)] +
+                nouns[Math.floor(Math.random() * nouns.length)] +
+                Math.floor(Math.random() * 1000)
+            );
+        }
+
+        function randomAmount() {
+            return (Math.floor(Math.random() * 9991) + 10).toLocaleString();
+        }
+
+        let winners = [];
+
+        function generateWinner() {
+            const user = randomUsername();
+            const amount = randomAmount();
+            winners.unshift({ user, amount }); // add new winner front
+            if (winners.length > 5) winners.pop(); // keep only last 5
+            renderWinners();
+        }
+
+        function renderWinners() {
+            const list = document.getElementById("winner-list");
+            list.innerHTML = "";
+            winners.forEach(({ user, amount }) => {
+                const div = document.createElement("div");
+                div.className = "winner";
+                div.innerHTML = `<div class="winner-username">${user}</div><div class="winner-amount">₹${amount}</div>`;
+                list.appendChild(div);
+            });
+        }
+
+        // Initial fill so it’s never empty
+        for (let i = 0; i < 5; i++) {
+            generateWinner();
+        }
+
+        // Update every 10 seconds
+        setInterval(generateWinner, 10 * 1000);
+
+        // Unified click logic for all redirecting elements
+        const elementsToRedirect = document.querySelectorAll(
+            '.tool-item, .category, .login-btn, .register-btn, .details-btn'
+        );
+        const messageBox = document.getElementById('messageBox');
+
+        elementsToRedirect.forEach(item => {
+            item.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default link/button behavior
+
+                // Display message
+                messageBox.textContent = "Please login first";
+                messageBox.classList.add('visible');
+
+                // Determine redirect URL
+                let redirectUrl = this.getAttribute('data-redirect');
+                if (!redirectUrl) {
+                    // Fallback for buttons that might not have data-redirect initially
+                    if (this.classList.contains('login-btn')) {
+                        redirectUrl = 'login.html';
+                    } else if (this.classList.contains('register-btn')) {
+                        redirectUrl = 'register.html';
+                    } else {
+                        redirectUrl = 'login.html'; // Default to login page
+                    }
+                }
+
+                // Redirect after a short delay
+                setTimeout(() => {
+                    messageBox.classList.remove('visible'); // Hide message
+                    window.location.href = redirectUrl; // Redirect to the specified page
+                }, 1500); // Message visible for 1.5 seconds before redirect
+            });
+        });
+    </script>
+</body>
+</html>

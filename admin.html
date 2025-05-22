@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Game Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-bottom: 20px; /* Space at the bottom */
+        }
+        .admin-header {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            position: sticky; /* Make header sticky */
+            top: 0;
+            z-index: 100;
+        }
+        .admin-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+        .admin-header .back-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #4a5568;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            padding: 5px;
+            border-radius: 50%;
+        }
+        .admin-header .back-button:hover {
+            color: #ef4444;
+            background-color: #f0f2f5;
+        }
+
+        .admin-container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px; /* Wider for admin content */
+            box-sizing: border-box;
+            margin-top: 30px;
+        }
+
+        .form-section h2, .game-list-section h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #ef4444;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+        .add-game-btn {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            background-color: #28a745; /* Green for add button */
+            color: white;
+            font-size: 1.125rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+        }
+        .add-game-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        /* Game List Styling */
+        .game-list-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+        .game-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Responsive grid for games */
+            gap: 20px;
+        }
+        .game-card {
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        .game-card img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .game-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            word-break: break-word; /* Allow long names to wrap */
+        }
+        .game-card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .delete-btn {
+            background-color: #dc3545; /* Red for delete */
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* Message Box Styling (reused from homepage) */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ef4444; /* Red background */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .message-box.visible {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                padding: 10px 15px;
+            }
+            .admin-header h1 {
+                font-size: 1.3rem;
+            }
+            .admin-header .back-button {
+                font-size: 1.2rem;
+            }
+            .admin-container {
+                padding: 1.5rem;
+                margin: 20px 1rem;
+            }
+            .form-section h2, .game-list-section h2 {
+                font-size: 1.1rem;
+            }
+            .form-group input, .form-group select, .add-game-btn {
+                font-size: 0.9rem;
+                padding: 0.6rem 1rem;
+            }
+            .game-list {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 15px;
+            }
+            .game-card img {
+                width: 60px;
+                height: 60px;
+            }
+            .game-card h3 {
+                font-size: 1rem;
+            }
+            .game-card p {
+                font-size: 0.8rem;
+            }
+            .delete-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            .message-box {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <button class="back-button" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+        <h1>Admin Panel</h1>
+        <div></div> </header>
+
+    <div class="admin-container">
+        <div class="form-section">
+            <h2>Add New Game</h2>
+            <form id="addGameForm">
+                <div class="form-group">
+                    <label for="gameName">Game Name:</label>
+                    <input type="text" id="gameName" placeholder="Enter game name" required>
+                    <div class="error-message" id="gameNameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="gameLogoUrl">Game Logo URL:</label>
+                    <input type="url" id="gameLogoUrl" placeholder="Enter logo URL (e.g., https://example.com/logo.png)" required>
+                    <div class="error-message" id="gameLogoUrlError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="gameUrl">Game URL:</label>
+                    <input type="url" id="gameUrl" placeholder="Enter game URL (e.g., https://example.com/game)" required>
+                    <div class="error-message" id="gameUrlError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="gameCategory">Category:</label>
+                    <select id="gameCategory" required>
+                        </select>
+                    <div class="error-message" id="gameCategoryError"></div>
+                </div>
+                <button type="submit" class="add-game-btn">Add Game</button>
+            </form>
+        </div>
+
+        <div class="game-list-section">
+            <h2>Existing Games</h2>
+            <div class="game-list" id="gameList">
+                <p id="noGamesMessage" class="text-center text-gray-500 hidden">No games added yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script>
+        // IMPORTANT: In a real application, game data would be stored and managed on a secure backend (e.g., Firestore).
+        // For this demonstration, we are using localStorage for simplicity.
+        const LOCAL_STORAGE_KEY = 'adminGamesData';
+
+        // Define game categories - must match categories in your main homepage
+        const gameCategories = [
+            { id: 'lottery', name: 'Lottery' },
+            { id: 'original', name: 'Original' },
+            { id: 'slots', name: 'Slots' },
+            { id: 'fishing', name: 'Fishing' },
+            { id: 'sports', name: 'Sports' },
+            { id: 'casino', name: 'Casino' },
+            { id: 'pvc', name: 'PVC' }
+        ];
+
+        let games = []; // Array to hold game objects
+
+        const addGameForm = document.getElementById('addGameForm');
+        const gameNameInput = document.getElementById('gameName');
+        const gameLogoUrlInput = document.getElementById('gameLogoUrl');
+        const gameUrlInput = document.getElementById('gameUrl');
+        const gameCategorySelect = document.getElementById('gameCategory');
+        const gameListContainer = document.getElementById('gameList');
+        const noGamesMessage = document.getElementById('noGamesMessage');
+        const messageBox = document.getElementById('messageBox');
+
+        // Function to show custom message
+        function showMessage(message, type = 'error') {
+            messageBox.textContent = message;
+            messageBox.className = 'message-box visible'; // Reset classes
+            if (type === 'success') {
+                messageBox.style.backgroundColor = '#28a745'; // Green for success
+            } else {
+                messageBox.style.backgroundColor = '#ef4444'; // Red for error
+            }
+            setTimeout(() => {
+                messageBox.classList.remove('visible');
+            }, 3000); // Hide after 3 seconds
+        }
+
+        // Populate category dropdown
+        function populateCategories() {
+            gameCategorySelect.innerHTML = '<option value="">Select Category</option>';
+            gameCategories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                gameCategorySelect.appendChild(option);
+            });
+        }
+
+        // Load games from localStorage
+        function loadGames() {
+            const storedGames = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (storedGames) {
+                try {
+                    games = JSON.parse(storedGames);
+                } catch (e) {
+                    console.error("Error parsing stored games:", e);
+                    games = [];
+                }
+            }
+            renderGames();
+        }
+
+        // Save games to localStorage
+        function saveGames() {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(games));
+        }
+
+        // Render games in the list
+        function renderGames() {
+            gameListContainer.innerHTML = ''; // Clear current list
+
+            if (games.length === 0) {
+                noGamesMessage.classList.remove('hidden');
+            } else {
+                noGamesMessage.classList.add('hidden');
+                games.forEach((game, index) => {
+                    const gameCard = document.createElement('div');
+                    gameCard.className = 'game-card';
+                    gameCard.innerHTML = `
+                        <img src="${game.logoUrl}" alt="${game.name}" onerror="this.onerror=null; this.src='https://placehold.co/60x60/cccccc/000000?text=No+Image';">
+                        <h3>${game.name}</h3>
+                        <p>Category: ${gameCategories.find(cat => cat.id === game.category)?.name || 'N/A'}</p>
+                        <button class="delete-btn" data-index="${index}">Delete</button>
+                    `;
+                    gameListContainer.appendChild(gameCard);
+                });
+
+                // Attach delete event listeners
+                gameListContainer.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', deleteGame);
+                });
+            }
+        }
+
+        // Clear form errors
+        function clearFormErrors(form) {
+            form.querySelectorAll('.error-message').forEach(errorDiv => {
+                errorDiv.textContent = '';
+                errorDiv.style.display = 'none';
+            });
+            form.querySelectorAll('input, select').forEach(input => {
+                input.style.borderColor = '#cbd5e0';
+                input.style.boxShadow = 'none';
+            });
+        }
+
+        // Add Game handler
+        addGameForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            clearFormErrors(this);
+
+            const name = gameNameInput.value.trim();
+            const logoUrl = gameLogoUrlInput.value.trim();
+            const gameUrl = gameUrlInput.value.trim();
+            const category = gameCategorySelect.value;
+            let isValid = true;
+
+            if (!name) {
+                document.getElementById('gameNameError').textContent = 'Game name is required.';
+                document.getElementById('gameNameError').style.display = 'block';
+                gameNameInput.style.borderColor = '#ef4444';
+                isValid = false;
+            }
+            if (!logoUrl) {
+                document.getElementById('gameLogoUrlError').textContent = 'Logo URL is required.';
+                document.getElementById('gameLogoUrlError').style.display = 'block';
+                gameLogoUrlInput.style.borderColor = '#ef4444';
+                isValid = false;
+            } else if (!/^https?:\/\/.+\.(jpg|jpeg|png|gif|svg)$/i.test(logoUrl)) {
+                 document.getElementById('gameLogoUrlError').textContent = 'Please enter a valid image URL (jpg, png, gif, svg).';
+                 document.getElementById('gameLogoUrlError').style.display = 'block';
+                 gameLogoUrlInput.style.borderColor = '#ef4444';
+                 isValid = false;
+            }
+            if (!gameUrl) {
+                document.getElementById('gameUrlError').textContent = 'Game URL is required.';
+                document.getElementById('gameUrlError').style.display = 'block';
+                gameUrlInput.style.borderColor = '#ef4444';
+                isValid = false;
+            } else if (!/^https?:\/\/.+/.test(gameUrl)) {
+                document.getElementById('gameUrlError').textContent = 'Please enter a valid URL.';
+                document.getElementById('gameUrlError').style.display = 'block';
+                gameUrlInput.style.borderColor = '#ef4444';
+                isValid = false;
+            }
+            if (!category) {
+                document.getElementById('gameCategoryError').textContent = 'Category is required.';
+                document.getElementById('gameCategoryError').style.display = 'block';
+                gameCategorySelect.style.borderColor = '#ef4444';
+                isValid = false;
+            }
+
+            if (isValid) {
+                const newGame = { name, logoUrl, gameUrl, category };
+                games.push(newGame);
+                saveGames();
+                renderGames();
+                addGameForm.reset(); // Clear the form
+                showMessage('Game added successfully!', 'success');
+            } else {
+                showMessage('Please correct the errors in the form.');
+            }
+        });
+
+        // Delete Game handler
+        function deleteGame(event) {
+            const indexToDelete = parseInt(event.target.dataset.index);
+            if (confirm('Are you sure you want to delete this game?')) { // Using confirm for simplicity, replace with custom modal in production
+                games.splice(indexToDelete, 1);
+                saveGames();
+                renderGames();
+                showMessage('Game deleted successfully!', 'success');
+            }
+        }
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            populateCategories();
+            loadGames();
+        });
+    </script>
+</body>
+</html>

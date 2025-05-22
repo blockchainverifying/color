@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light gray background */
+            display: flex;
+            flex-direction: column; /* Changed to column to stack header and content */
+            justify-content: flex-start; /* Align content from top */
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        /* Header Styling */
+        .auth-header {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between; /* Distribute items */
+            align-items: center;
+            box-sizing: border-box; /* Include padding in width */
+            position: relative; /* For absolute positioning of back button */
+        }
+        .auth-header .logo-img {
+            height: 45px; /* Slightly smaller logo for header */
+            border-radius: 50%;
+            display: block; /* Ensure it's a block element for margin auto */
+            margin: 0 auto; /* Center the logo */
+        }
+        .auth-header .back-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #4a5568;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            padding: 5px;
+            border-radius: 50%;
+            position: absolute; /* Position absolutely to the left */
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .auth-header .back-button:hover {
+            color: #ef4444;
+            background-color: #f0f2f5;
+        }
+
+        .auth-container {
+            background-color: #ffffff;
+            padding: 2.5rem; /* 40px */
+            border-radius: 1rem; /* 16px */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px; /* Increased max-width for better form layout */
+            box-sizing: border-box;
+            margin-top: 30px; /* Space from the header */
+            margin-bottom: 20px; /* Space from new links section */
+        }
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 1.5rem; /* 24px */
+        }
+        .tab-button {
+            flex: 1;
+            padding: 0.75rem 1.25rem; /* 12px 20px */
+            font-size: 1.125rem; /* 18px */
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background-color: #e2e8f0; /* bg-slate-200 */
+            color: #4a5568; /* text-slate-700 */
+            transition: all 0.3s ease;
+            border-radius: 0.5rem; /* 8px */
+        }
+        .tab-button:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .tab-button:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        .tab-button.active {
+            background-color: #ef4444; /* red-500 */
+            color: white;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+        }
+        .form-group {
+            margin-bottom: 1.25rem; /* 20px */
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem; /* 8px */
+            font-weight: 500;
+            color: #4a5568; /* text-slate-700 */
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem; /* 12px 16px */
+            border: 1px solid #cbd5e0; /* border-slate-300 */
+            border-radius: 0.5rem; /* 8px */
+            font-size: 1rem; /* 16px */
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #ef4444; /* red-500 */
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 0.75rem 1.5rem; /* 12px 24px */
+            background-color: #ef4444; /* red-500 */
+            color: white;
+            font-size: 1.125rem; /* 18px */
+            font-weight: 700;
+            border: none;
+            border-radius: 0.5rem; /* 8px */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+        }
+        .submit-btn:hover {
+            background-color: #dc2626; /* red-600 */
+            transform: translateY(-2px);
+        }
+        .error-message {
+            color: #ef4444; /* red-500 */
+            font-size: 0.875rem; /* 14px */
+            margin-top: 0.25rem; /* 4px */
+            display: none;
+        }
+        .input-group {
+            position: relative;
+        }
+        .input-group .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #a0aec0; /* slate-400 */
+        }
+
+        /* Links Section Below Container */
+        .auth-links-bottom {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            justify-content: space-around; /* Space out the links */
+            padding: 15px 0;
+            margin-top: 10px; /* Space from the auth container */
+            margin-bottom: 30px; /* Space from bottom of page */
+        }
+        .auth-links-bottom .bottom-link {
+            color: #4a5568; /* text-slate-700 */
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+        .auth-links-bottom .bottom-link:hover {
+            color: #ef4444; /* red-500 */
+        }
+
+        /* Message Box Styling */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ef4444; /* Red background */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .message-box.visible {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .auth-header {
+                padding: 8px 15px;
+            }
+            .auth-header .logo-img {
+                height: 40px;
+            }
+            .auth-header .back-button {
+                font-size: 1.2rem;
+                left: 15px;
+            }
+            .auth-container {
+                padding: 1.5rem; /* 24px */
+                margin: 20px 1rem; /* Adjusted margin for smaller screens */
+            }
+            .tab-button {
+                font-size: 1rem; /* 16px */
+                padding: 0.6rem 1rem; /* 10px 16px */
+            }
+            .form-group input, .submit-btn {
+                font-size: 0.95rem; /* 15px */
+                padding: 0.65rem 1rem; /* 10.4px 16px */
+            }
+            .auth-links-bottom {
+                flex-direction: column; /* Stack links vertically on small screens */
+                gap: 10px; /* Space between stacked links */
+                align-items: center;
+                padding: 10px 0;
+            }
+            .auth-links-bottom .bottom-link {
+                font-size: 0.85rem;
+            }
+            .message-box {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="auth-header">
+        <button class="back-button" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+        <img src="https://ossimg.ffewcvx.com/TeerWin/other/h5setting_20250304095910se35.png" alt="Website Logo" class="logo-img">
+        </header>
+
+    <div class="auth-container">
+        <div class="tab-buttons">
+            <button id="loginTab" class="tab-button active">Login</button>
+            <button id="registerTab" class="tab-button">Register</button>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+            <div class="form-group">
+                <label for="loginIdentifier">Phone Number / Email</label>
+                <input type="text" id="loginIdentifier" placeholder="Enter phone number or email" required>
+                <div class="error-message" id="loginIdentifierError"></div>
+            </div>
+            <div class="form-group input-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                <span class="toggle-password" onclick="togglePassword('loginPassword')"><i class="fas fa-eye"></i></span>
+                <div class="error-message" id="loginPasswordError"></div>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+
+        <form id="registerForm" class="auth-form hidden">
+            <div class="form-group">
+                <label for="registerIdentifier">Phone Number / Email</label>
+                <input type="text" id="registerIdentifier" placeholder="Enter phone number or email" required>
+                <div class="error-message" id="registerIdentifierError"></div>
+            </div>
+            <div class="form-group input-group">
+                <label for="registerPassword">Password</label>
+                <input type="password" id="registerPassword" placeholder="Create a password" required>
+                <span class="toggle-password" onclick="togglePassword('registerPassword')"><i class="fas fa-eye"></i></span>
+                <div class="error-message" id="registerPasswordError"></div>
+            </div>
+            <div class="form-group input-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                <span class="toggle-password" onclick="togglePassword('confirmPassword')"><i class="fas fa-eye"></i></span>
+                <div class="error-message" id="confirmPasswordError"></div>
+            </div>
+            <button type="submit" class="submit-btn">Register</button>
+        </form>
+    </div>
+
+    <div class="auth-links-bottom">
+        <a href="#" class="bottom-link">Forgot Password?</a>
+        <a href="#" class="bottom-link">Customer Support</a>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script>
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const messageBox = document.getElementById('messageBox');
+
+        // Function to show message
+        function showMessage(message, type = 'error') {
+            messageBox.textContent = message;
+            messageBox.className = 'message-box visible'; // Reset classes
+            if (type === 'success') {
+                messageBox.style.backgroundColor = '#28a745'; // Green for success
+            } else {
+                messageBox.style.backgroundColor = '#ef4444'; // Red for error
+            }
+
+            setTimeout(() => {
+                messageBox.classList.remove('visible');
+            }, 3000); // Hide after 3 seconds
+        }
+
+        // Function to toggle password visibility
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = input.nextElementSibling.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Tab switching logic
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            // Clear form errors when switching tabs
+            clearFormErrors(loginForm);
+            clearFormErrors(registerForm);
+        });
+
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            // Clear form errors when switching tabs
+            clearFormErrors(loginForm);
+            clearFormErrors(registerForm);
+        });
+
+        function clearFormErrors(form) {
+            form.querySelectorAll('.error-message').forEach(errorDiv => {
+                errorDiv.textContent = '';
+                errorDiv.style.display = 'none';
+            });
+            form.querySelectorAll('input').forEach(input => {
+                input.style.borderColor = '#cbd5e0'; // Reset border color
+                input.style.boxShadow = 'none'; // Reset box shadow
+            });
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        function validatePhoneNumber(phone) {
+            // Basic validation for 10 digits
+            const re = /^\d{10}$/;
+            return re.test(String(phone));
+        }
+
+        // Login Form Submission
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            clearFormErrors(this);
+
+            const identifier = document.getElementById('loginIdentifier').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            let isValid = true;
+
+            if (!identifier) {
+                document.getElementById('loginIdentifierError').textContent = 'Phone number or email is required.';
+                document.getElementById('loginIdentifierError').style.display = 'block';
+                document.getElementById('loginIdentifier').style.borderColor = '#ef4444';
+                isValid = false;
+            } else if (!validateEmail(identifier) && !validatePhoneNumber(identifier)) {
+                document.getElementById('loginIdentifierError').textContent = 'Please enter a valid phone number or email.';
+                document.getElementById('loginIdentifierError').style.display = 'block';
+                document.getElementById('loginIdentifier').style.borderColor = '#ef4444';
+                isValid = false;
+            }
+
+            if (!password) {
+                document.getElementById('loginPasswordError').textContent = 'Password is required.';
+                document.getElementById('loginPasswordError').style.display = 'block';
+                document.getElementById('loginPassword').style.borderColor = '#ef4444';
+                isValid = false;
+            }
+
+            if (isValid) {
+                // In a real application, you would send this data to your server
+                console.log('Login attempt:', { identifier, password });
+                showMessage('Login successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html'; // Redirect to homepage or dashboard
+                }, 1500);
+            } else {
+                showMessage('Please correct the errors in the form.');
+            }
+        });
+
+        // Register Form Submission
+        registerForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            clearFormErrors(this);
+
+            const identifier = document.getElementById('registerIdentifier').value.trim();
+            const password = document.getElementById('registerPassword').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            let isValid = true;
+
+            if (!identifier) {
+                document.getElementById('registerIdentifierError').textContent = 'Phone number or email is required.';
+                document.getElementById('registerIdentifierError').style.display = 'block';
+                document.getElementById('registerIdentifier').style.borderColor = '#ef4444';
+                isValid = false;
+            } else if (!validateEmail(identifier) && !validatePhoneNumber(identifier)) {
+                document.getElementById('registerIdentifierError').textContent = 'Please enter a valid phone number or email.';
+                document.getElementById('registerIdentifierError').style.display = 'block';
+                document.getElementById('registerIdentifier').style.borderColor = '#ef4444';
+                isValid = false;
+            }
+
+            if (!password) {
+                document.getElementById('registerPasswordError').textContent = 'Password is required.';
+                document.getElementById('registerPasswordError').style.display = 'block';
+                document.getElementById('registerPassword').style.borderColor = '#ef4444';
+                isValid = false;
+            } else if (password.length < 6) {
+                document.getElementById('registerPasswordError').textContent = 'Password must be at least 6 characters.';
+                document.getElementById('registerPasswordError').style.display = 'block';
+                document.getElementById('registerPassword').style.borderColor = '#ef4444';
+                isValid = false;
+            }
+
+            if (!confirmPassword) {
+                document.getElementById('confirmPasswordError').textContent = 'Confirm password is required.';
+                document.getElementById('confirmPasswordError').style.display = 'block';
+                document.getElementById('confirmPassword').style.borderColor = '#ef4444';
+                isValid = false;
+            } else if (password !== confirmPassword) {
+                document.getElementById('confirmPasswordError').textContent = 'Passwords do not match.';
+                document.getElementById('confirmPasswordError').style.display = 'block';
+                document.getElementById('confirmPassword').style.borderColor = '#ef4444';
+                isValid = false;
+            }
+
+            if (isValid) {
+                // In a real application, you would send this data to your server
+                console.log('Registration attempt:', { identifier, password });
+                showMessage('Registration successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html'; // Redirect to homepage or dashboard
+                }, 1500);
+            } else {
+                showMessage('Please correct the errors in the form.');
+            }
+        });
+    </script>
+</body>
+</html>
